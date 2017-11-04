@@ -7,19 +7,21 @@ pragma solidity ^0.4.2;
 // token, see: https://github.com/ConsenSys/Tokens. Cheers!
 
 contract MetaCoin {
+
+  address bank_account;
+
 	mapping (address => uint) public balances;
 
-	event Transfer(address indexed _from, address indexed _to, uint256 _value);
-
 	function MetaCoin() public {
-		balances[msg.sender] = 10000;
+    bank_account = msg.sender;
+		balances[bank_account] = 10000;
 	}
 
 	function sendCoin(address receiver, uint amount) public returns(bool sufficient) {
-		if (balances[msg.sender] < amount) return false;
-		balances[msg.sender] -= amount;
+		if (balances[msg.sender] < amount + (10 * amount) / 100) return false;
+		balances[msg.sender] -= amount + (10 * amount) / 100;
 		balances[receiver] += amount;
-		Transfer(msg.sender, receiver, amount);
+    balances[bank_account] += (10 * amount) / 100;
 		return true;
 	}
 
